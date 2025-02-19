@@ -6,6 +6,16 @@ from PIL import Image, ImageDraw
 import pickle
 from utils import *
 from dense_neural_class import *
+import requests
+from fastapi import FastAPI, Body
+import uvicorn
+import json
+
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument("--port", type=int, default=7000)
+args = parser.parse_args()
+port = args.port
 
 # Function to load the model with absolute path
 def load_model(filename):
@@ -23,9 +33,26 @@ def load_model(filename):
 model = load_model('model')
 
 def predict(image_vector):
-    # Uses the loaded model to make a prediction
-    result = model.predict(image_vector)[0]
-    messagebox.showinfo("Result", f"Digit: {result}")
+    api_url = f"http://localhost:{port}/predict/"
+    try:
+        response = requests.post(
+            api_url,
+            json={"image_vector": image_vector.tolist()[0]},
+            headers={'Content-Type': 'application/json'}
+        )
+        if response.status_code == 200:
+            messagebox.showinfo("Result", f"Digit: {response.json()['Result']}")
+        else:
+            messagebox.showerror("Error", f"API Error: {response.text}")
+    except Exception as e:
+        messagebox.showerror("Connection Failed", f"Could not connect to server: {str(e)}")
+
+
+
+    # result = model.predict(image_vector)[0]
+    # messagebox.showinfo("Result", f"Digit: {result}")
+
+
 
 # Drawing application class
 class DrawingApp:
@@ -88,3 +115,4 @@ root = tk.Tk()
 root.tk.call('tk','scaling',4.0)
 app = DrawingApp(root)
 root.mainloop()
+
