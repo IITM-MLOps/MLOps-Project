@@ -3,7 +3,7 @@ The Handwritten Digit Classifier is a project developed to classify digits drawn
 
 Richard Feynman: What I cannot create, I do not understand.
 
-https://github.com/user-attachments/assets/39132ce1-bf7e-4020-86cf-b6afc05fa541
+<!-- https://github.com/user-attachments/assets/39132ce1-bf7e-4020-86cf-b6afc05fa541 -->
 
 ## How to Play
 To start the canvas, execute the `app.py` file.<br>
@@ -14,6 +14,9 @@ If you want to start over, press the "Erase" button.<br>
   <img src="doodle.gif"  />
 </div>
  
+
+  https://drive.google.com/file/d/1G5a0BTOJifjhFvBnBCGxYmZYy2xrx3Tk/view?usp=sharing
+
 # Doodle Digit Predictor User Manual
 
 This guide helps non-technical users draw and predict digits using the web application.
