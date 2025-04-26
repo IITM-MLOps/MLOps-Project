@@ -1,0 +1,39 @@
+name: FastAPI Predict CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  test-fastapi:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install Python and dependencies
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.10
+
+      - name: Install requirements
+        run: |
+          pip install fastapi uvicorn pydantic numpy
+          # + any other packages you need
+
+      - name: Start FastAPI Server
+        run: |
+          nohup uvicorn app:app --host 0.0.0.0 --port 7000 --log-level info &
+          sleep 5  # wait for server to start
+
+      - name: Run curl test
+        run: |
+          curl -X POST http://localhost:7000/predict/ \
+            -H 'accept: application/json' \
+            -H 'Content-Type: application/json' \
+            -d '{"image_vector": ['$(printf '0.0,'%.0s {1..783})'0.0]}'
+
+      - name: Kill FastAPI Server
+        run: |
+          pkill uvicorn
