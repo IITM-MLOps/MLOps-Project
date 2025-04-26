@@ -40,5 +40,16 @@ This guide helps non-technical users draw and predict digits using the web appli
 - **Prediction Fails**: Check your internet connection or contact the administrator.
 - **Error Messages**: Read the red text below the canvas for details.
 
-## Screenshot
-[Insert screenshot of the canvas with a drawn digit and result]
+<!-- ## Screenshot
+[Insert screenshot of the canvas with a drawn digit and result] -->
+
+
+```bash
+dvc init
+git add .dvc .gitignore
+git commit -m "Initialize DVC"
+
+dvc add mnist/
+git add mnist.dvc
+git commit -m "Track MNIST dataset"
+```
