@@ -10,7 +10,10 @@ To start the canvas, execute the `app.py` file.<br>
 Draw a number between 0 and 9 and press the "Tell the Number" button.<br>
 If you want to start over, press the "Erase" button.<br>
 
-
+<div align="center">
+  <img src="doodle.gif"  />
+</div>
+ 
 # Doodle Digit Predictor User Manual
 
 This guide helps non-technical users draw and predict digits using the web application.
