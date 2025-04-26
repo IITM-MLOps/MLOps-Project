@@ -6,26 +6,25 @@ on:
       - master
 
 jobs:
-  test-fastapi:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      - name: Install Python and dependencies
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.10
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
 
-      - name: Install requirements
-        run: |
-          pip install fastapi uvicorn pydantic numpy
-          # + any other packages you need
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
 
-      - name: Start FastAPI Server
-        run: |
-          nohup uvicorn app:app --host 0.0.0.0 --port 7000 --log-level info &
-          sleep 5  # wait for server to start
+
+    - name: Start FastAPI Server
+      run: |
+        python fast.py
 
       - name: Run curl test
         run: |
