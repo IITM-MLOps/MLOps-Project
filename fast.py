@@ -3,6 +3,7 @@
 #!pip install spacy fastapi
 
 from fastapi import FastAPI, Body
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from pydantic import BaseModel
 import numpy as np
@@ -12,6 +13,14 @@ import os
 import pickle
 # create the webapp.
 app = FastAPI(title="Predict Digits")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Or ["https://curly-pancake-v6rjp5ggvqgwhwpwr-3000.app.github.dev"]
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 #configurable portnumber
 import argparse
