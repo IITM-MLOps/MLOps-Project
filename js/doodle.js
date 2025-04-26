@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isDrawing = false;
 
+
     // Drawing settings
     ctx.lineWidth = 20; // Matches brush_size in Tkinter app
     ctx.strokeStyle = 'yellow'; // Visible on black background
@@ -61,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Send to FastAPI
         try {
-            const response = await fetch("http://0.0.0.0:7000/predict/", {
+            const response = await fetch("https://curly-pancake-v6rjp5ggvqgwhwpwr-7000.app.github.dev/predict", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ image_vector: imageVector })
