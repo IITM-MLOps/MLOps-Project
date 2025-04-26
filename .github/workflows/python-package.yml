@@ -1,4 +1,4 @@
-name: FastAPI Predict CI
+name: Doodle Digit Prediction
 
 on:
   push:
