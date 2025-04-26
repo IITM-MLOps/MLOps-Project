@@ -1,0 +1,70 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python download_mnist.py
+    outs:
+    - path: mnist
+      hash: md5
+      md5: a1764a6217c895eed50f8e82887a3f99.dir
+      size: 66544770
+      nfiles: 8
+  train:
+    cmd: python train.py
+    deps:
+    - path: download_mnist.py
+      hash: md5
+      md5: 9660b4e5dce155ee731a3496925f3e00
+      size: 1514
+    - path: mnist
+      hash: md5
+      md5: a1764a6217c895eed50f8e82887a3f99.dir
+      size: 66544770
+      nfiles: 8
+    - path: train.py
+      hash: md5
+      md5: 5c69c3fdc82580c0687125f42ddb8744
+      size: 3517
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: d0e793db410dc133e77947801eb39bc2
+      size: 69
+    - path: model_save_test.pkl
+      hash: md5
+      md5: 135bffb91e1bf9b90cc403a70bd68ce0
+      size: 324344
+  serve:
+    cmd: nohup python fast.py > server.log 2>&1 &
+    deps:
+    - path: fast.py
+      hash: md5
+      md5: 36ca0107adba45de782416192cf45049
+      size: 2634
+    - path: model_save_test.pkl
+      hash: md5
+      md5: 135bffb91e1bf9b90cc403a70bd68ce0
+      size: 324344
+    outs:
+    - path: server.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+  test:
+    cmd: python test_api.py
+    deps:
+    - path: server.log
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    outs:
+    - path: test_result.json
+      hash: md5
+      md5: 3f4e8229478ec62bf1ca1db4cbfd99e0
+      size: 331
+  kill all process:
+    cmd: pkill uvicorn || true
+    deps:
+    - path: test_result.json
+      hash: md5
+      md5: 3f4e8229478ec62bf1ca1db4cbfd99e0
+      size: 331

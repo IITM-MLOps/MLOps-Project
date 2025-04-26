@@ -1,26 +1,44 @@
+# dvc.yaml for MNIST Digit Classification Pipeline
 stages:
   preprocess:
-    cmd: python scripts/preprocess.py
-    deps:
-      - data/raw
-      - scripts/preprocess.py
+    cmd: python download_mnist.py
     outs:
-      - data/processed
+      - mnist
+    desc: "Download raw MNIST dataset files"
 
   train:
-    cmd: python scripts/train.py
+    cmd: python train.py
     deps:
-      - data/processed
-      - scripts/train.py
+      - mnist
+      - download_mnist.py
+      - train.py
     outs:
-      - model/model.pkl
+      # - model.pkl
+      - model_save_test.pkl
     metrics:
       - metrics.json
+    desc: "Train the neural network model on MNIST data"
 
-  evaluate:
-    cmd: python scripts/evaluate.py
+
+  serve:
+    cmd: nohup python fast.py > server.log 2>&1 &
     deps:
-      - model/model.pkl
-      - scripts/evaluate.py
+      - model_save_test.pkl
+      - fast.py
     outs:
-      - reports/evaluation.txt
+      - server.log  # Log file as a placeholder for 'weblink'
+    desc: "Start FastAPI server to serve the model for predictions"
+
+  test:
+    cmd: python test_api.py
+    deps:
+      - server.log  # Depends on serve stage output to ensure server is running
+    outs:
+      - test_result.json
+    desc: "Test the FastAPI server by sending a prediction request"
+
+  kill all process:
+    cmd: pkill uvicorn || true
+    deps:
+      - test_result.json  # Depends on test stage to ensure testing is complete
+    desc: "Stop the FastAPI server by killing the Uvicorn process"

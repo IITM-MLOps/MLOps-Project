@@ -16,23 +16,45 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: '3.10'
-
-    - name: Install dependencies
+      
+    - name: Install system dependencies
       run: |
+        sudo apt-get update
+        sudo apt-get install -y git
+
+    # Install Python dependencies
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-
-    - name: Start FastAPI Server
+    # Initialize DVC
+    - name: Initialize DVC
       run: |
-        python fast.py
+        dvc init --no-scm
+        git add .dvc/config
+        git commit -m "Initialize DVC"
 
-      - name: Run curl test
-        run: |
-          curl -X POST http://localhost:7000/predict/ \
-            -H 'accept: application/json' \
-            -H 'Content-Type: application/json' \
-            -d '{"image_vector": ['$(printf '0.0,'%.0s {1..783})'0.0]}'
+    # Run DVC pipeline
+    - name: Run DVC pipeline
+      run: |
+        dvc repro
+      env:
+        PYTHONUNBUFFERED: 1 # Ensure real-time logging
 
-      - name: Kill FastAPI Server
-        run: |
-          pkill uvicorn
+    # Upload artifacts (optional)
+    - name: Upload DVC outputs
+      uses: actions/upload-artifact@v4
+      with:
+        name: dvc-outputs
+        path: |
+          model_save_test.pkl
+          metrics.json
+          test_result.json
+          server.log
+
+    # Clean up (optional, ensure no hanging processes)
+    - name: Clean up processes
+      if: always()
+      run: |
+        pkill uvicorn || true

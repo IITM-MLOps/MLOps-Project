@@ -22,8 +22,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Environment variable for port with default value
-EXPOSE 7000
+EXPOSE 5000
 
 
-CMD ["python","fast.py","--port","7000"]
+CMD ["python","fast.py","--port","5000"]
 

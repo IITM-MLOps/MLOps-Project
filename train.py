@@ -5,6 +5,7 @@ import struct
 import pickle
 from utils import *
 from dense_neural_class import *
+import json
 
 # Initialize Spark Session
 spark = SparkSession.builder.appName("MNIST Data Ingestion").getOrCreate()
@@ -68,8 +69,22 @@ Y_pred_test = model2.predict(X_test).reshape(-1,1)
 # Prediction using train set
 Y_hat = model2.predict(X).reshape(-1,1).reshape(-1,1)
 
-print(f'Accuracy on Test: {np.mean(Y_test == Y_pred_test)}')
-print(f'Accuracy on Train: {np.mean(Y == Y_hat)}')
+# Calculate metrics
+train_accuracy = float(np.mean(Y == Y_hat))
+test_accuracy = float(np.mean(Y_test == Y_pred_test))
+
+print(f'Accuracy on Test: {test_accuracy}')
+print(f'Accuracy on Train: {train_accuracy}')
+
+# Log metrics to metrics.json
+metrics = {
+    "train_accuracy": train_accuracy,
+    "test_accuracy": test_accuracy
+}
+
+with open('metrics.json', 'w') as f:
+    json.dump(metrics, f, indent=2)
+    print("Metrics saved to metrics.json")
 
 # Saving the Model
 save_model('model_save_test', model2)

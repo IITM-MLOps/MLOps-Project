@@ -59,3 +59,35 @@ dvc add mnist/
 git add mnist.dvc
 git commit -m "Track MNIST dataset"
 ```
+
+
+```
+dvc dag
++------------+ 
+| preprocess | 
++------------+ 
+       *       
+       *       
+       *       
+  +-------+    
+  | train |    
+  +-------+    
+       *       
+       *       
+       *       
+  +-------+    
+  | serve |    
+  +-------+    
+       *       
+       *       
+       *       
+   +------+    
+   | test |    
+   +------+    
+       *       
+       *       
+       *       
+    +-----+    
+    | end |    
+    +-----+   
+```

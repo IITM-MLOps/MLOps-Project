@@ -1,0 +1,11 @@
+# params.yaml for MNIST Digit Classification
+preprocess:
+  normalize: true
+  reshape_size: 784
+
+train:
+  learning_rate: 0.001
+  batch_size: 64
+  epochs: 10
+serve:
+  port: 8000
