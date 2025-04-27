@@ -102,7 +102,7 @@ Let’s **summarize and update** everything properly, including how this fits in
 | Model Training | Custom NN + MLflow tracking | ✔️ |
 | Experiment Tracking | MLflow | ✔️ |
 | Version Control | Git + DVC | ✔️  |
-| Pipeline Automation | GitHub Actions (CI) | ⚡ You can add this easily now! |
+| Pipeline Automation | GitHub Actions (CI) | ✔️  |
 | Model Serving | FastAPI | ✔️ |
 | Model Testing | API-based tests | ✔️ |
 
