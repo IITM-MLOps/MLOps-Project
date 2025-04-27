@@ -117,7 +117,7 @@ with open('metrics.json', 'w') as f:
     json.dump(metrics, f, indent=2)
     print("Metrics saved to metrics.json")
 
-mlflow.log_artifact("metrics.json")
+# mlflow.log_artifact("metrics.json")
 # mlflow.log_artifact("model_save_test.pkl") 
 
 # Log additional information (custom tags)
