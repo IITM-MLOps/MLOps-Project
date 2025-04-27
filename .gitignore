@@ -2,5 +2,4 @@ __pycache__
 /server.log
 /test_result.json
 /mnist
-/model_save_test.pkl
 /metrics.json
