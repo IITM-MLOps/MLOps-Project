@@ -1,8 +1,120 @@
 # Hand Written Digit Classifier Numpy Only
-The Handwritten Digit Classifier is a project developed to classify digits drawn by the user in an interface. The training and calculations of the algorithm were implemented using only the Numpy library. The main objective of this project is to gain an in-depth understanding of how a neural network functions. It aims to provide insights into the underlying mechanics of neural networks without relying on high-level libraries, focusing instead on core concepts like forward propagation, backpropagation, and gradient descent.
+The Handwritten Digit Classifier is a project developed to classify digits drawn by the user in an web interface. The training and calculations were implemented using only the Numpy library. 
 
 Richard Feynman: What I cannot create, I do not understand.
 
+
+Here’s a **summary** of how **MLflow** and **Spark** are used in your code, framed within your **MLOps project context**:
+
+---
+
+# Data Engineering [Spark used]
+
+- **Data Ingestion / Transformation**:  
+  You use **PySpark** (`SparkSession`) to load and preprocess the **MNIST images and labels**:
+  - Images and labels are read from binary files using Python's `struct` and `numpy`.
+  - The data is parallelized into **RDDs** and then converted into **Spark DataFrames** with explicit schemas (`StructType`).
+  - This prepares the MNIST dataset in a distributed way, though the dataset is relatively small.
+
+- **Throughput and Speed**:  
+  Since MNIST is a lightweight dataset, Spark isn't fully utilized for scalability here. However, using Spark **shows readiness for scaling to bigger datasets** and **makes ingestion structured and parallelizable**.
+
+- **Presence of Airflow/Spark/Custom pipeline**:  
+  You are using **Spark** as the **data engineering pipeline** (✔️) — there is no Airflow involved here.
+
+---
+
+# Source Control & Continuous Integration [DVC and Git expected, but missing in your code]
+
+- **DVC/CI/CD**:  
+  In the code you shared, there is **no implementation of DVC** yet (e.g., no `dvc.yaml`, `dvc add` or DVC DAG structure).
+  
+- **Source/Model Versioning**:  
+  You are using **pickle** (`save_model`, `load_model`) for **model persistence**, but there's no DVC/Git versioning shown explicitly.  
+  You might need to add:
+  - Git repo (`git init`)
+  - Git LFS (for large files like models)
+  - DVC (for tracking datasets and models)
+  - A DVC pipeline (for CI-style stages like ingestion ➔ training ➔ evaluation).
+
+---
+
+# Experiment Tracking [MLflow used properly]
+
+- **Experiment Tracking with MLflow**:
+  - **Experiment** is set with `mlflow.set_experiment("MNIST_Digit_Classification")`.
+  - **Tracking URI** is set to local filesystem (`file:./mlruns`).
+  - You start a **run** (`with mlflow.start_run`) and **log parameters** (hyperparameters like learning rate, epochs, etc).
+  - You **log metrics** (train and test accuracy).
+  - You also **log artifacts manually** (you save a `metrics.json`, commented out logging artifacts though — needs `mlflow.log_artifact("metrics.json")` to activate).
+  - You **set tags** to describe model type and dataset — beyond default autologging (✔️).
+
+- **Tracked Items**:
+  - **Parameters**: learning rate, number of epochs, batch sizes, layer sizes, output size.
+  - **Metrics**: train accuracy, test accuracy.
+  - **Artifacts** (partially): metrics.json (model file is saved, but not yet logged to MLflow).
+  - **Tags**: model type ("Custom Neural Network"), dataset ("MNIST").
+
+---
+
+# 📌 Quick Checklist Mapping to Your Questions:
+| Area                     | Status | Notes |
+|---------------------------|--------|-------|
+| Spark pipeline present?   | ✔️ | Data ingestion using Spark. |
+| Airflow present?          | ❌ | Not used. |
+| Throughput speed?         | ➡️ | MNIST is small; pipeline is ready for scalability though. |
+| DVC or Git versioning?    | ❌ | Not shown yet; recommended to add. |
+| Experiment tracking?      | ✔️ | Using MLflow manually (parameters, metrics, tags). |
+| Tracking other info?      | ✔️ | Custom tags beyond autologging. |
+
+---
+
+Got it — you’ve now shared your **DVC pipeline** (`dvc.yaml`) for the project.  
+Let’s **summarize and update** everything properly, including how this fits into your **MLOps structure** + how you can **connect it with GitHub Actions** for CI/CD.
+
+---
+
+# 📄 Updated DVC Pipeline (your `dvc.yaml`)
+**Stages you have defined:**
+
+| Stage Name          | Command | Key Actions |
+|---------------------|---------|-------------|
+| `preprocess`         | `python download_mnist.py` | Download MNIST data (saved into `mnist/`). |
+| `train`              | `python train.py` | Train the model ➔ Output model `model_save_test.pkl` and `metrics.json`. |
+| `serve`              | `nohup python fast.py > server.log 2>&1 &` | Start FastAPI server in background. |
+| `test`               | `python test_api.py` | Test the FastAPI server by sending a request. Output: `test_result.json`. |
+| `kill all process`   | `pkill uvicorn || true` | Kill Uvicorn server process after testing. |
+
+---
+
+# Key Updates and Notes:
+- ✅ **Model versioning** is handled (`model_save_test.pkl` as `outs` in DVC).
+- ✅ **Metrics tracking** is done (`metrics.json` tracked inside DVC).
+- ✅ **Artifacts** like `server.log` and `test_result.json` are managed.
+
+
+---
+
+# 🧠 Summary: Your Updated MLOps Architecture
+| Component | Tool | Status |
+|-----------|------|--------|
+| Data Ingestion | Spark | ✔️ |
+| Model Training | Custom NN + MLflow tracking | ✔️ |
+| Experiment Tracking | MLflow | ✔️ |
+| Version Control | Git + DVC | ✔️  |
+| Pipeline Automation | GitHub Actions (CI) | ⚡ You can add this easily now! |
+| Model Serving | FastAPI | ✔️ |
+| Model Testing | API-based tests | ✔️ |
+
+---
+
+# ⚡ Final small TODOs
+- `dvc remote` is not configured (like GDrive, S3, etc.)
+
+---
+
+Would you also like me to show you an even **cleaner DAG diagram** of your DVC stages? 🧩  
+It’ll help you visualize it if you need to show in your project report or presentation! 🎯  (I can generate it for you.)
 <!-- https://github.com/user-attachments/assets/39132ce1-bf7e-4020-86cf-b6afc05fa541 -->
 
 ``

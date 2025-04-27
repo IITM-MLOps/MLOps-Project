@@ -37,7 +37,7 @@ stages:
       - test_result.json
     desc: "Test the FastAPI server by sending a prediction request"
 
-  kill all process:
+  kill_server:
     cmd: pkill uvicorn || true
     deps:
       - test_result.json  # Depends on test stage to ensure testing is complete
