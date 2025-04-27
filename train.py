@@ -8,6 +8,13 @@ from dense_neural_class import *
 import json
 import mlflow
 
+
+# Use a relative path that resolves to the current directory
+mlflow.set_tracking_uri("file:./mlruns")
+mlflow.set_experiment("MNIST_Digit_Classification")
+
+
+
 # Initialize Spark Session
 spark = SparkSession.builder.appName("MNIST Data Ingestion").getOrCreate()
 
@@ -110,7 +117,7 @@ with open('metrics.json', 'w') as f:
     json.dump(metrics, f, indent=2)
     print("Metrics saved to metrics.json")
 
-# mlflow.log_artifact("metrics.json")
+mlflow.log_artifact("metrics.json")
 mlflow.log_artifact("model_save_test.pkl")
 
 # Log additional information (custom tags)
