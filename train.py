@@ -6,6 +6,7 @@ import pickle
 from utils import *
 from dense_neural_class import *
 import json
+import mlflow
 
 # Initialize Spark Session
 spark = SparkSession.builder.appName("MNIST Data Ingestion").getOrCreate()
@@ -52,7 +53,27 @@ print(f"Training labels shape: {Y.shape}")
 print(f"Testing images shape: {X_test.shape}")
 print(f"Testing labels shape: {Y_test.shape}")
 
+# Define hyperparameters for training
+learning_rate = 0.005
+epochs_initial = 11
+epochs_improve = 61
+batch_size_initial = 60000
+batch_size_improve = 40
+hidden_layer1_size = 50
+hidden_layer2_size = 20
+output_size = 10
 
+# Start an MLflow run to track the experiment
+with mlflow.start_run(run_name="MNIST_Training_Run") as run:
+    # Log parameters
+    mlflow.log_param("learning_rate", learning_rate)
+    mlflow.log_param("epochs_initial", epochs_initial)
+    mlflow.log_param("epochs_improve", epochs_improve)
+    mlflow.log_param("batch_size_initial", batch_size_initial)
+    mlflow.log_param("batch_size_improve", batch_size_improve)
+    mlflow.log_param("hidden_layer1_size", hidden_layer1_size)
+    mlflow.log_param("hidden_layer2_size", hidden_layer2_size)
+    mlflow.log_param("output_size", output_size)
 
 # Putting the data in a best-known format.
 
@@ -76,6 +97,9 @@ test_accuracy = float(np.mean(Y_test == Y_pred_test))
 print(f'Accuracy on Test: {test_accuracy}')
 print(f'Accuracy on Train: {train_accuracy}')
 
+mlflow.log_metric("train_accuracy", train_accuracy)
+mlflow.log_metric("test_accuracy", test_accuracy)
+
 # Log metrics to metrics.json
 metrics = {
     "train_accuracy": train_accuracy,
@@ -86,6 +110,13 @@ with open('metrics.json', 'w') as f:
     json.dump(metrics, f, indent=2)
     print("Metrics saved to metrics.json")
 
+mlflow.log_artifact("metrics.json")
+mlflow.log_artifact("model_save_test.pkl")
+
+# Log additional information (custom tags)
+mlflow.set_tag("model_type", "Custom Neural Network")
+mlflow.set_tag("dataset", "MNIST")
+print("########Experiment tracked with MLflow##########")
 # Saving the Model
 save_model('model_save_test', model2)
 

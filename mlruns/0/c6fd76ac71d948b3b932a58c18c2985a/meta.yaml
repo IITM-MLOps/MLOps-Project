@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/FastAPI/mlruns/0/c6fd76ac71d948b3b932a58c18c2985a/artifacts
+end_time: 1745757708421
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c6fd76ac71d948b3b932a58c18c2985a
+run_name: MNIST_Training_Run
+run_uuid: c6fd76ac71d948b3b932a58c18c2985a
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745757708378
+status: 3
+tags: []
+user_id: codespace

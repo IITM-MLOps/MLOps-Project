@@ -1,0 +1,15 @@
+artifact_uri: file:///workspaces/FastAPI/mlruns/0/07831b0f03d34cb69cd926f2be7ad6f4/artifacts
+end_time: 1745757798616
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 07831b0f03d34cb69cd926f2be7ad6f4
+run_name: efficient-snake-15
+run_uuid: 07831b0f03d34cb69cd926f2be7ad6f4
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745757798240
+status: 3
+tags: []
+user_id: codespace

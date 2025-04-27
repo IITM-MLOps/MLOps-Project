@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Send to FastAPI
         try {
-            const response = await fetch("https://curly-pancake-v6rjp5ggvqgwhwpwr-7000.app.github.dev/predict", {
+            const response = await fetch("http://localhost:7000", {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ image_vector: imageVector })
