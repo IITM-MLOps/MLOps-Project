@@ -10,6 +10,8 @@ import argparse
 import json
 from utils import *
 from dense_neural_class import *
+from prometheus_fastapi_instrumentator import Instrumentator
+from prometheus_client import Counter, REGISTRY
 
 # Set up logging to debug issues in Codespaces
 logging.basicConfig(level=logging.INFO)
@@ -32,6 +34,22 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--port", type=int, default=7000)
 args = parser.parse_args()
 port = args.port
+
+# Initialize Prometheus instrumentation
+instrumentator = Instrumentator()
+instrumentator.instrument(app).expose(app, endpoint="/metrics")
+
+# Custom Prometheus metrics (explicitly registered)
+data_drift_counter = Counter(
+    'data_drift_detected_total',
+    'Total number of data drift detections',
+    registry=REGISTRY
+)
+api_call_counter = Counter(
+    'api_predict_calls_total',
+    'Total number of calls to the predict endpoint',
+    registry=REGISTRY
+)
 
 def load_model(filename):
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -62,7 +80,6 @@ async def health_check():
 # Data drift detection setup
 reference_stats_path = 'reference_stats.json'
 
-# If reference stats file does not exist or is invalid, create it with MNIST dataset statistics
 def initialize_reference_stats():
     reference_stats = {
         "mean": 0.1307,  # MNIST dataset mean pixel value
@@ -75,16 +92,15 @@ def initialize_reference_stats():
         return reference_stats
     except Exception as e:
         logger.error(f"Failed to create reference_stats.json: {str(e)}")
-        return reference_stats  # Return default stats even if write fails
+        return reference_stats
 
-# Load or initialize reference stats
 if not os.path.exists(reference_stats_path):
     reference_stats = initialize_reference_stats()
 else:
     try:
         with open(reference_stats_path, 'r') as f:
             content = f.read().strip()
-            if not content:  # Check if file is empty
+            if not content:
                 logger.warning(f"reference_stats.json is empty, reinitializing with default stats")
                 reference_stats = initialize_reference_stats()
             else:
@@ -98,18 +114,13 @@ else:
         reference_stats = initialize_reference_stats()
 
 def detect_data_drift(new_data, threshold=0.1):
-    """
-    Detect data drift by comparing mean and std of new_data with reference stats.
-    Returns True if drift detected, False otherwise.
-    """
     new_mean = np.mean(new_data)
     new_std = np.std(new_data)
-
     mean_drift = abs(new_mean - reference_stats['mean'])
     std_drift = abs(new_std - reference_stats['std'])
-
     if mean_drift > threshold or std_drift > threshold:
         logger.warning(f"Data drift detected: mean_drift={mean_drift}, std_drift={std_drift}")
+        data_drift_counter.inc()
         return True
     return False
 
@@ -119,23 +130,16 @@ class Data(BaseModel):
 @app.post("/predict/")
 async def upload_image(data: Data):
     try:
-        # Validate input length (MNIST images are 28x28 = 784 pixels)
+        api_call_counter.inc()
         if len(data.image_vector) != 784:
             raise HTTPException(
                 status_code=400,
                 detail=f"Expected 784 values for MNIST image, got {len(data.image_vector)}"
             )
-        # Reshape input for the model
         image_data = np.array(data.image_vector)
         logger.info(f"Input reshaped to shape: {image_data.shape}")
-
-        # Data drift detection
         if detect_data_drift(image_data):
             logger.warning("Data drift detected in input data.")
-            # Optionally, raise a warning or error or log for monitoring
-            # For now, just log and continue
-
-        # Make the prediction
         result = model.predict(image_data)[0]
         logger.info(f"Prediction result: {result}")
         return {"Result": int(result)}

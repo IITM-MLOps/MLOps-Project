@@ -1,0 +1,6 @@
+artifact_location: file:///workspaces/FastAPI/mlruns/439678299014353029
+creation_time: 1745761873577
+experiment_id: '439678299014353029'
+last_update_time: 1745761873577
+lifecycle_stage: active
+name: MNIST_Digit_Classification
