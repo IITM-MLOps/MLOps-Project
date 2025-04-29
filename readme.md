@@ -1,6 +1,9 @@
-## DA5402 ->->-> DA24S016
+# Welcome!
+
+## DA5402 Course Project [by da24s016] 
 
 I'm excited to guide you through my **Doodle Digit Classifier** project, built from scratch with raw **Numpy** to predict digits doodled on a web canvas. Inspired by the idea of understanding through creation, . Let's explore this system-spanning training, serving, and monitoring-with a concise, first-person perspective, focusing on the intricate monitoring API and project details.
+
 
 ---
 
@@ -29,7 +32,7 @@ I’ve structured this into four domains: **Training**, **Serving**, **Monitorin
 - **Inference Engine**: The loaded Numpy model (`model_save_test.pkl`) computes predictions, a direct application of my trained weights.
 
 #### 3. Monitoring: Deep Insights with APIs
-- **Prometheus Metrics API**: I’ve wired **Prometheus** to track every API call, data drift (input anomalies), and feedback errors via `/metrics`. My custom counters (`data_drift_detected_total`, `prediction_error_total`) expose real-time health signals, scraped every second for analysis.
+- **Prometheus Metrics API**: I’ve wired **Prometheus** to track every API call, data drift (input anomalies), and feedback errors via `/metrics`. My custom counters (`data_drift_detected_total`, `prediction_error_total`) extend monitoring beyond basic API hits to detect subtle shifts in input data and feedback trends.
 - **Grafana Visualization**: Connected to Prometheus, my **Grafana** dashboards at `http://localhost:3001` plot trends-API usage, error spikes, drift patterns-offering visual diagnostics without log diving.
 - **Feedback Logging API**: The `/feedback/` endpoint logs user inputs (predicted vs. actual digits) to `feedback_log.json`, incrementing error counts in `inference_metrics.json` if predictions miss. This API fuels my monitoring by capturing real-world performance, vital for spotting model weaknesses.
 - **Metrics Storage**: I persist metrics in JSON files (`inference_metrics.json`), ensuring historical data for manual analysis or custom dashboard extensions, enhancing my monitoring depth.
@@ -186,13 +189,6 @@ I chose **Git**, **DVC**, and **GitHub Actions** because they form a seamless ML
 
 ---
 
-
-
-# ⚡ Final small TODOs
-- `dvc remote` is not configured (like GDrive, S3, etc.)
-
----
-
 <!-- https://github.com/user-attachments/assets/39132ce1-bf7e-4020-86cf-b6afc05fa541 -->
 
 ``
@@ -292,6 +288,11 @@ flowchart TD
 ---
 
 
+# ⚡ Final small TODOs
+- `dvc remote` is not configured (like GDrive, S3, etc.)
+- Pipleline visualization with console is missing.
 
+---
+Hope you liked it!!!
 
 
