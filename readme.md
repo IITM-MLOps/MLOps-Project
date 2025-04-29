@@ -170,19 +170,18 @@ flowchart TD
     subgraph Serving
         B -->|HTTP Requests| C[REST API<br>FastAPI]
         C -->|Predictions| D[Inference Engine<br>Numpy NN]
+        B -->|Feedback| C
     end
     subgraph Monitoring
         C -->|Metrics| E[Prometheus<br>Monitoring]
         D -->|Metrics| E
         E -->|Visualize| G[Grafana<br>Dashboard]
-        D -->|Experiment Data| F[MLflow<br>Tracking]
     end
     subgraph Training
         H[Training Data<br>MNIST] -->|Input| I[Training Module<br>Spark + Numpy]
         I -->|Stores| J[Model Artifact<br>MLflow]
         J -->|Loads| D
-        F -->|Evaluation| K[Evaluation<br>Module]
-        K -->|Triggers Retrain| I
+        I -->|Logs Metrics| F[MLflow<br>Tracking]
     end
 
     %% Styling
@@ -193,7 +192,6 @@ flowchart TD
     classDef Monitoring fill:#E8F5E9,stroke:#388E3C,color:#388E3C
     classDef Data fill:#F3E5F5,stroke:#7B1FA2,color:#7B1FA2
     classDef Training fill:#E0F7FA,stroke:#0288D1,color:#0288D1
-    classDef Evaluation fill:#FFF8E1,stroke:#FBC02D,color:#FBC02D
 
     A:::User
     B:::UI
@@ -205,10 +203,10 @@ flowchart TD
     H:::Data
     I:::Training
     J:::Training
-    K:::Evaluation
 
     %% Link styling
-    linkStyle 0,1,2,3,4,5,6,7,8,9 stroke:#555,stroke-width:2px
+    linkStyle 0,1,2,3,4,5,6,7,8 stroke:#555,stroke-width:2px
+
 ```
 
 ```bash
