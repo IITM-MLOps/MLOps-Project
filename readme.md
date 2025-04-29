@@ -158,6 +158,69 @@ This guide helps non-technical users draw and predict digits using the web appli
 [Insert screenshot of the canvas with a drawn digit and result] -->
 
 
+## HLD Diagram
+
+
+```mermaid
+flowchart TD
+    %% Subgraphs for logical grouping
+    subgraph User_Interaction
+        A[User] -->|Interacts| B[Frontend UI<br>HTML/JS]
+    end
+    subgraph Serving
+        B -->|HTTP Requests| C[REST API<br>FastAPI]
+        C -->|Predictions| D[Inference Engine<br>Numpy NN]
+        B -->|Feedback| C
+    end
+    subgraph Monitoring
+        C -->|Metrics| E[Prometheus<br>Monitoring]
+        D -->|Metrics| E
+        E -->|Visualize| G[Grafana<br>Dashboard]
+    end
+    subgraph Training
+        H[Training Data<br>MNIST] -->|Input| I[Training Module<br>Spark + Numpy]
+        I -->|Stores| J[Model Artifact<br>MLflow]
+        J -->|Loads| D
+        I -->|Logs Metrics| F[MLflow<br>Tracking]
+    end
+    subgraph Version_Control
+        K[DVC<br>Data & Pipeline<br>Versioning] -->|Manages| H
+        K -->|Manages| I
+        L[Git<br>Code Versioning] -->|Manages| B
+        L -->|Manages| C
+        L -->|Manages| I
+    end
+
+    %% Styling
+    classDef User fill:#D4F4DD,stroke:#2E7D32,color:#2E7D32
+    classDef UI fill:#FFF3E0,stroke:#F57C00,color:#F57C00
+    classDef API fill:#E2EBFF,stroke:#374D7C,color:#374D7C
+    classDef Inference fill:#FCE4EC,stroke:#C2185B,color:#C2185B
+    classDef Monitoring fill:#E8F5E9,stroke:#388E3C,color:#388E3C
+    classDef Data fill:#F3E5F5,stroke:#7B1FA2,color:#7B1FA2
+    classDef Training fill:#E0F7FA,stroke:#0288D1,color:#0288D1
+    classDef VersionControl fill:#F5F5F5,stroke:#616161,color:#616161
+
+    A:::User
+    B:::UI
+    C:::API
+    D:::Inference
+    E:::Monitoring
+    F:::Monitoring
+    G:::Monitoring
+    H:::Data
+    I:::Training
+    J:::Training
+    K:::VersionControl
+    L:::VersionControl
+
+    %% Link styling
+    linkStyle 0,1,2,3,4,5,6,7,8,9,10,11,12,13 stroke:#555,stroke-width:2px
+
+
+
+```
+
 ```bash
 dvc init
 git add .dvc .gitignore
