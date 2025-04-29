@@ -1,82 +1,6 @@
+## DA5402 ->->-> DA24S016
+
 I'm excited to guide you through my **Doodle Digit Classifier** project, built from scratch with raw **Numpy** to predict digits doodled on a web canvas. Inspired by the idea of understanding through creation, . Let's explore this system-spanning training, serving, and monitoring-with a concise, first-person perspective, focusing on the intricate monitoring API and project details.
-
----
-
-### My Vision: Decoding Doodles with Numpy
-I set out to recognize handwritten digits (0-9) using a neural network crafted solely with **Numpy**, avoiding high-level frameworks. This project, hosted at [aayushmanda/FastAPI](https://github.com/aayushmanda/FastAPI), is my deep dive into the math of ML-matrix operations, gradients, and all-transforming a pixelated sketch into a number through hands-on coding.
-
----
-
-### System Architecture: My Computational Graph
-I’ve structured this into four domains: **Training**, **Serving**, **Monitoring**, and **Version Control**. Here’s how they connect.
-
-#### 1. Training: Crafting the Neural Net
-- **Data Prep with Spark**: I use **PySpark** to ingest the MNIST dataset (70k images) from binary files into arrays via RDDs and DataFrames. Spark’s scalability is overkill for MNIST, but it preps me for larger datasets.
-- **Numpy Model**: My custom multi-layer perceptron, built with **Numpy**, handles forward and backward passes manually. It’s raw and revealing-pure math in action.
-- **MLflow Tracking**: I log every run with **MLflow** (`mlflow.set_experiment("MNIST_Digit_Classification")`), capturing hyperparameters, accuracy metrics, and artifacts like `metrics.json` in `mlruns/`.
-
-#### 2. Serving: From Sketch to Prediction
-- **Frontend (HTML/JS)**: At `http://localhost:3000`, my web canvas lets users draw digits, sending 784-pixel vectors to the backend for prediction and feedback.
-- **Backend (FastAPI)**: My **FastAPI** server at `http://localhost:7000` processes `/predict/` requests with the trained model and logs feedback via `/feedback/`.
-- **Inference Engine**: The loaded Numpy model (`model_save_test.pkl`) computes predictions, a direct application of my trained weights.
-
-#### 3. Monitoring: Deep Insights with APIs
-- **Prometheus Metrics API**: I’ve wired **Prometheus** to track every API call, data drift (input anomalies), and feedback errors via `/metrics`. My custom counters (`data_drift_detected_total`, `prediction_error_total`) expose real-time health signals, scraped every second for analysis.
-- **Grafana Visualization**: Connected to Prometheus, my **Grafana** dashboards at `http://localhost:3001` plot trends-API usage, error spikes, drift patterns-offering visual diagnostics without log diving.
-- **Feedback Logging API**: The `/feedback/` endpoint logs user inputs (predicted vs. actual digits) to `feedback_log.json`, incrementing error counts in `inference_metrics.json` if predictions miss. This API fuels my monitoring by capturing real-world performance, vital for spotting model weaknesses.
-- **Metrics Storage**: I persist metrics in JSON files (`inference_metrics.json`), ensuring historical data for manual analysis or custom dashboard extensions, enhancing my monitoring depth.
-
-#### 4. Version Control: Reproducibility Anchors
-- **DVC**: I use **DVC** to version MNIST data and pipeline stages (`dvc.yaml`), ensuring reproducible workflows with `dvc repro`.
-- **Git**: My **Git** repo tracks code changes across frontend, backend, and training scripts, enabling collaboration and history.
-
----
-
-### My Workflow: DVC Pipeline
-I’ve defined a **DVC Pipeline** in `dvc.yaml` to orchestrate this system:
-- **Preprocess**: Downloads MNIST data.
-- **Train**: Builds the Numpy model, logs to MLflow.
-- **Serve**: Runs FastAPI for predictions.
-- **Test**: Validates API with requests.
-- **Kill Server**: Stops the server post-test.
-
-The DAG below maps this flow, a clear dependency graph I rely on for execution.
-
-```
-dvc dag
-+------------+   
-| preprocess |   
-+------------+   
-        *        
-        *        
-        *        
-   +-------+     
-   | train |     
-   +-------+     
-        *        
-        *        
-        *        
-   +-------+     
-   | serve |     
-   +-------+     
-        *        
-        *        
-        *        
-    +------+     
-    | test |     
-    +------+     
-        *        
-        *        
-        *        
-+-------------+  
-| kill_server |  
-+-------------+       
-```
-
----
-
-### Why I Built This
-I wanted to master ML fundamentals by coding a neural net with **Numpy**, understanding every operation. **Spark** taught me data scaling, **MLflow** experiment tracking, **FastAPI** API design, **Prometheus/Grafana** monitoring, and **DVC/Git** reproducibility. It’s my learning lab.
 
 ---
 
@@ -91,19 +15,11 @@ I’ve made it easy for anyone to test my app at `http://localhost:3000/index.ht
 ---
 
 
-
-
-
-### My Vision: Decoding Doodles with Numpy
-I set out to recognize handwritten digits (0-9) using a neural network crafted solely with **Numpy**, avoiding high-level frameworks. This project, hosted at [aayushmanda/FastAPI](https://github.com/aayushmanda/FastAPI), is my deep dive into the math of ML-matrix operations, gradients, and all-transforming a pixelated sketch into a number through hands-on coding.
-
----
-
 ### System Architecture: My Computational Graph
 I’ve structured this into four domains: **Training**, **Serving**, **Monitoring**, and **Version Control**. Here’s how they connect.
 
 #### 1. Training: Crafting the Neural Net
-- **Data Prep with Spark**: I use **PySpark** to ingest the MNIST dataset (70k images) from binary files into arrays via RDDs and DataFrames. Spark’s scalability is overkill for MNIST, but it preps me for larger datasets.
+- **Data Prep with Spark**: I used **PySpark** to ingest the MNIST dataset (70k images) from binary files into arrays via RDDs and DataFrames. Spark’s scalability is overkill for MNIST, but it preps me for larger datasets.
 - **Numpy Model**: My custom multi-layer perceptron, built with **Numpy**, handles forward and backward passes manually. It’s raw and revealing-pure math in action.
 - **MLflow Tracking**: I log every run with **MLflow** (`mlflow.set_experiment("MNIST_Digit_Classification")`), capturing hyperparameters, accuracy metrics, and artifacts like `metrics.json` in `mlruns/`.
 
@@ -167,10 +83,6 @@ dvc dag
 
 ---
 
-### Why I Built This
-I wanted to master ML fundamentals by coding a neural net with **Numpy**, understanding every operation. **Spark** taught me data scaling, **MLflow** experiment tracking, **FastAPI** API design, **Prometheus/Grafana** monitoring, and **DVC/Git** reproducibility. It’s my learning lab.
-
----
 
 ### User Guide: Doodle Digit Predictor
 I’ve made it easy for anyone to test my app at `http://localhost:3000/index.html`:
@@ -208,8 +120,6 @@ I plan to set a DVC remote (e.g., S3), enhance UI with confidence scores.
 
 # Source Control & Continuous Integration [DVC and Git, GitHub Action]
 
-I'm excited to dive into the **Source Control & Continuous Integration** aspects of my **Handwritten Digit Classifier** project, built from the ground up with **Numpy** to predict digits drawn on a web canvas. Let's explore how I’ve integrated **DVC**, **Git**, and **GitHub Actions** into my MLOps pipeline to ensure versioning, reproducibility, and automation, Karpathy-style, with a focus on clarity and depth.
-
 ---
 
 ## Source Control & Continuous Integration: My Backbone for Reproducibility
@@ -239,7 +149,7 @@ In building this project, I’ve prioritized a robust system for managing code, 
 ---
 
 ### Why This Trio Matters
-I chose **Git**, **DVC**, and **GitHub Actions** because they form a seamless MLOps backbone. Git versions my code, DVC handles data and pipeline reproducibility, and GitHub Actions automates testing and integration. Together, they ensure that my project-from training with MNIST to serving predictions via FastAPI-remains consistent, trackable, and deployable. This setup lets me focus on building (like crafting my Numpy neural net) while the system manages the grunt work of versioning and validation.
+I chose **Git**, **DVC**, and **GitHub Actions** because they form a seamless MLOps backbone. Git versions my code, DVC handles data and pipeline reproducibility, and GitHub Actions automates testing and integration. Together, they ensure that my project-from training with MNIST to serving predictions via FastAPI-remains consistent, trackable, and deployable.
 
 ---
 
@@ -268,20 +178,6 @@ I chose **Git**, **DVC**, and **GitHub Actions** because they form a seamless ML
 
 ---
 
-
-# 📄 Updated DVC Pipeline (your `dvc.yaml`)
-**Stages you have defined:**
-
-| Stage Name          | Command | Key Actions |
-|---------------------|---------|-------------|
-| `preprocess`         | `python download_mnist.py` | Download MNIST data (saved into `mnist/`). |
-| `train`              | `python train.py` | Train the model ➔ Output model `model_save_test.pkl` and `metrics.json`. |
-| `serve`              | `nohup python fast.py > server.log 2>&1 &` | Start FastAPI server in background. |
-| `test`               | `python test_api.py` | Test the FastAPI server by sending a request. Output: `test_result.json`. |
-| `kill all process`   | `pkill uvicorn || true` | Kill Uvicorn server process after testing. |
-
----
-
 # Key Updates and Notes:
 - ✅ **Model versioning** is handled (`model_save_test.pkl` as `outs` in DVC).
 - ✅ **Metrics tracking** is done (`metrics.json` tracked inside DVC).
@@ -301,7 +197,7 @@ I chose **Git**, **DVC**, and **GitHub Actions** because they form a seamless ML
 
 ``
 
-
+# UI/UX
 <img width="1099" alt="Screenshot 2025-04-26 at 6 03 01 PM" src="https://github.com/user-attachments/assets/dfa28d0b-4593-4545-8fe9-686d7673fbf7" />
 
 
