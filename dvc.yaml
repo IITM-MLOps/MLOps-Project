@@ -1,4 +1,3 @@
-# dvc.yaml for MNIST Digit Classification Pipeline
 stages:
   preprocess:
     cmd: python download_mnist.py
@@ -13,20 +12,18 @@ stages:
       - download_mnist.py
       - train.py
     outs:
-      # - model.pkl
       - model_save_test.pkl
     metrics:
       - metrics.json
     desc: "Train the neural network model on MNIST data"
 
-
   serve:
-    cmd: nohup python fast.py > server.log 2>&1 &
+    cmd: nohup python -u fast.py > server.log 2>&1 &
     deps:
       - model_save_test.pkl
       - fast.py
     outs:
-      - server.log  # Log file as a placeholder for 'weblink'
+      - server.log  # Log file as a plasceholder for 'weblink'
     desc: "Start FastAPI server to serve the model for predictions"
 
   test:

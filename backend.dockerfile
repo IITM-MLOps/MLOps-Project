@@ -1,7 +1,7 @@
 # Dockerfile
 FROM python:3.10-slim
 
-WORKDIR /Users/aayus/HandwrittenDigitClassifier
+WORKDIR .
 
 # Install system dependencies for OpenCV and Tkinter
 RUN apt-get update && apt-get install -y 
@@ -22,8 +22,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Environment variable for port with default value
-EXPOSE 5000
+EXPOSE 7000
 
 
-CMD ["python","fast.py","--port","5000"]
+CMD ["python","fast.py","--port","7000"]
 
